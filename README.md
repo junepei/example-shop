@@ -26,7 +26,7 @@ set상품의 기준으로 세울 카테고리를 어떤 카테고리에 매핑 �
 StyleSetProduct는 Product와 일반적으로 생애주기를 함께 합니다. Product의 종속적입니다. Product가 판매가 일시중지되거나 판매종료가 된다면 StyleSetProduct에도 반영이 필요할 수 있습니다.(styleSetPriceTag 부분) 다만 변경시점은 Product의 변경없이도 StyleSetProduct의 변경이 발생할 수 있습니다. set판매의 기능확대로 set판매에 대해 부가 정보가 추가된다면 어드민을 통해 StyleSetProduct만 변경하는 경우도 있을 겁니다.
 
 ### styleSetPriceTag의 의도
-상품의 노출은 사업의 의사결정에 대응할 수 있게 유연한 구조를 가져야 합니다. StyleSetProduct에 tag속성을 두어 상품 노출에 조건을 추가하거나 정렬의 우선순위를 부여할 수 있도록 설계했습니다. styleSetPriceTag는 가격과 관련된 노출을 설정할 수 있는 tag입니다. 현재 조건으로는 자동적으로 설정이 되어야 합니다.
+상품의 노출은 사업의 의사결정에 대응할 수 있게 유연한 구조를 가져야 합니다. StyleSetProduct에 tag속성을 두어 상품 노출에 조건을 추가하거나 정렬의 우선순위를 부여할 수 있도록 설계했습니다. styleSetPriceTag는 가격과 관련된 노출을 설정할 수 있는 tag입니다.
 
 ### styleSetPriceTag의 관리
 상품의 노출조건은 판매여부와 전시여부, 판매기간, 일시중지 등 여러 조건이 붙을 수 있습니다. 예제에서의 styleSetPriceTag 설정은 상품 추가/변경/삭제 상황에서만 발생하지만 판매기간, 종료기간처럼 이벤트 발생없이 시간의 경과로 상품이 노출상태가 변경이 될 수 있습니다. 실제 서비스가 진행이 된다면 데몬을 이용하여 styleSetPriceTag의 값 설정을 지속적으로 확인하여 업데이트 하는 작업이 필요하다고 계획하고 있습니다. 
