@@ -1,6 +1,7 @@
 package jpabook.jpashop.product;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 public class Category {
     @Id
     @GeneratedValue
@@ -15,13 +17,8 @@ public class Category {
 
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "category_product",
-            joinColumns = @JoinColumn(name = "category_no"),
-            inverseJoinColumns = @JoinColumn(name = "product_no")
-    )
+    @ManyToMany(mappedBy = "categories")
     private List<Product> products = new ArrayList<>();
-
 
     @ManyToOne
     @JoinColumn(name = "parentCategoryNo")
@@ -29,4 +26,10 @@ public class Category {
 
     @OneToMany(mappedBy = "parent")
     private List<Category> children;
+
+    public static Category createForTest() {
+        Category category = new Category();
+        category.setName("테스트 카테고리");
+        return category;
+    }
 }

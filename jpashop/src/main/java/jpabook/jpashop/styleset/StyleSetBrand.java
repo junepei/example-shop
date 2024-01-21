@@ -1,6 +1,6 @@
 package jpabook.jpashop.styleset;
 
-
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,14 +10,14 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @Setter
-public class StyleSet {
+public class StyleSetBrand {
     @Id
     @GeneratedValue
-    private long styleSetNo;
-    @Enumerated(EnumType.STRING)
-    private StyleSetType styleSetType;
+    private long styleSetBrandNo;
+    @NotNull
     private long brandNo;
+    @NotNull
     private String brandName;
-    private long productNo;
-    private BigDecimal price;
+
+    private BigDecimal totalPrice;
 }
