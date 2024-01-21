@@ -11,5 +11,5 @@ import java.util.List;
 public class BrandLowestPriceCollection {
     private BigDecimal totalPrice;
     private String brandName;
-    private List<StyleSetProduct> products;
+    private List<StyleSetProductResponse> products;
 }

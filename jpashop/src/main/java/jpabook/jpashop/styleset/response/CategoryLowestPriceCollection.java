@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class CategoryLowestPriceCollection {
     private String categoryName;
-    private StyleSetProduct lowestPriceProduct;
-    private StyleSetProduct highestPriceProduct;
+    private StyleSetProductResponse lowestPriceProduct;
+    private StyleSetProductResponse highestPriceProduct;
 }
