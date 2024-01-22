@@ -1,15 +1,15 @@
 package jpabook.jpashop.styleset.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BrandLowestPriceCollection {
-    private BigDecimal totalPrice;
     private String brandName;
+    private BigDecimal totalPrice;
     private List<StyleSetProductResponse> products;
 }

@@ -1,8 +1,7 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.common.JpaShopUtils;
-import jpabook.jpashop.common.exception.InternalServerErrorException;
 import jpabook.jpashop.styleset.*;
+import jpabook.jpashop.styleset.response.BrandLowestPriceCollection;
 import jpabook.jpashop.styleset.response.LowestPriceCollection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,14 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,10 +30,17 @@ public class StyleSetTestServiceTest extends StyleSetTestData {
     @Mock
     StyleSetBrandRepository styleSetBrandRepository;
 
-    @DisplayName("getLowestPriceCollection - 성공적인 케이스")
+    @Mock
+    StyleSetValidationService styleSetValidationService;
+
+    @DisplayName("getLowestPriceCollection - 성공 케이스")
     @Test
     public void testGetLowestPriceCollection() {
-        when(styleSetProductRepository.findByStyleSetPriceTag(StyleSetPriceTag.LOWEST_PRICE)).thenReturn(getLowestPriceStyleSetProduct());
+        List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
+
+        when(styleSetProductRepository.findByStyleSetPriceTag(StyleSetPriceTag.LOWEST_PRICE)).thenReturn(styleSetProducts);
+        doNothing().when(styleSetValidationService).validateLowestPriceStyleSetProducts(styleSetProducts);
+
 
         LowestPriceCollection lowestPriceCollection = styleSetService.getLowestPriceCollection();
 
@@ -43,26 +48,32 @@ public class StyleSetTestServiceTest extends StyleSetTestData {
         assertThat(lowestPriceCollection.getProducts().size()).isEqualTo(8);
     }
 
-    @DisplayName("getLowestPriceCollection - lowest price가 잘 못 설정(부족)")
+    @DisplayName("getLowestPriceBrandCollection - 성공 케이스")
     @Test
-    public void testGetLowestPriceCollection_dataError1() {
-        List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
-        List<StyleSetProduct> copiedStyleSetProducts = styleSetProducts.subList(1, styleSetProducts.size() -1);
+    public void getLowestPriceBrandCollection() {
+        StyleSetBrand styleSetBrand = createStyleSetBrand(brandD, new BigDecimal(36100));
+        List<StyleSetProduct> styleSetProducts = new ArrayList<>();
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(10100), StyleSetType.TOP, StyleSetPriceTag.BRAND_LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(5100), StyleSetType.OUTER, StyleSetPriceTag.BRAND_LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(3000), StyleSetType.PANTS, StyleSetPriceTag.LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(9500), StyleSetType.SNEAKERS, StyleSetPriceTag.BRAND_LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(2500), StyleSetType.BAG, StyleSetPriceTag.BRAND_LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(1500), StyleSetType.HAT, StyleSetPriceTag.LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(2400), StyleSetType.SOCKS, StyleSetPriceTag.BRAND_LOWEST_PRICE));
+        styleSetProducts.add(createStyleSetProduct(brandD, new BigDecimal(2000), StyleSetType.ACCESSORIES, StyleSetPriceTag.BRAND_LOWEST_PRICE));
 
-        when(styleSetProductRepository.findByStyleSetPriceTag(StyleSetPriceTag.LOWEST_PRICE)).thenReturn(copiedStyleSetProducts);
+        ArrayList<StyleSetPriceTag> styleSetPriceTags = new ArrayList<>();
+        styleSetPriceTags.add(StyleSetPriceTag.LOWEST_PRICE);
+        styleSetPriceTags.add(StyleSetPriceTag.BRAND_LOWEST_PRICE);
 
-        assertThatThrownBy(() -> styleSetService.getLowestPriceCollection()).isInstanceOf(InternalServerErrorException.class);
+        when(styleSetBrandRepository.findTop1OrderByTotalPrice()).thenReturn(styleSetBrand);
+        when(styleSetProductRepository.findByBrandNoAndStyleSetPriceTagIn(brandD.getBrandNo(), styleSetPriceTags)).thenReturn(styleSetProducts);
+
+        BrandLowestPriceCollection brandLowestPriceCollection = styleSetService.getLowestPriceBrandCollection();
+
+        assertThat(brandLowestPriceCollection.getBrandName()).isEqualTo(brandD.getBrandName());
+        assertThat(brandLowestPriceCollection.getTotalPrice()).isEqualTo(new BigDecimal(36100));
+        assertThat(brandLowestPriceCollection.getProducts().size()).isEqualTo(8);
     }
 
-    @DisplayName("getLowestPriceCollection - lowest price가 잘 못 설정(초과)")
-    @Test
-    public void testGetLowestPriceCollection_dataError2() {
-        List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
-        StyleSetProduct additionalProduct = createStyleSetProduct(brandA, new BigDecimal(1500), StyleSetType.TOP, StyleSetPriceTag.LOWEST_PRICE);
-        styleSetProducts.add(additionalProduct);
-
-        when(styleSetProductRepository.findByStyleSetPriceTag(StyleSetPriceTag.LOWEST_PRICE)).thenReturn(styleSetProducts);
-
-        assertThatThrownBy(() -> styleSetService.getLowestPriceCollection()).isInstanceOf(InternalServerErrorException.class);
-    }
 }

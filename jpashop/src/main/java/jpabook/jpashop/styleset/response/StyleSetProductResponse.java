@@ -4,7 +4,6 @@ import jpabook.jpashop.styleset.StyleSetProduct;
 import jpabook.jpashop.styleset.StyleSetType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -23,7 +22,7 @@ public class StyleSetProductResponse {
     public static StyleSetProductResponse of(StyleSetProduct styleSetProduct) {
         StyleSetProductResponse styleSetProductResponse = new StyleSetProductResponse();
         styleSetProductResponse.setStyleSetType(styleSetProduct.getStyleSetType());
-        styleSetProductResponse.setStyleSetName(styleSetProduct.getStyleSetType().getName());
+        styleSetProductResponse.setStyleSetName(styleSetProduct.getStyleSetType().getLabel());
         styleSetProductResponse.setBrandNo(styleSetProduct.getBrandNo());
         styleSetProductResponse.setBrandName(styleSetProduct.getBrandName());
         styleSetProductResponse.setProductNo(styleSetProduct.getProductNo());

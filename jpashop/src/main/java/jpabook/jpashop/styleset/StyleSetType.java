@@ -10,12 +10,13 @@ public enum StyleSetType {
     SOCKS("양말"),
     ACCESSORIES("액세서리");
 
-    private String name;
+    private final String label;
 
-    StyleSetType(String name) {
-        this.name = name;
+    StyleSetType(String label) {
+        this.label = label;
     }
-    public String getName() {
-        return this.name;
+    public String getLabel() {
+        return this.label;
     }
+
 }

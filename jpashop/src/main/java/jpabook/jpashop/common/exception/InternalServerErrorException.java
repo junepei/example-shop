@@ -8,4 +8,8 @@ public class InternalServerErrorException extends RuntimeException{
     public InternalServerErrorException(String message) {
         super(message);
     }
+
+    public ResponseCode getResponseCode() {
+        return this.responseCode;
+    }
 }

@@ -1,5 +1,5 @@
 package jpabook.jpashop.common;
 
 public enum ResponseCode {
-    SUCCESS, INTERNAL_SERVER_ERROR, BAD_REQUEST;
+    SUCCESS, INTERNAL_SERVER_ERROR, BAD_REQUEST, ERROR;
 }

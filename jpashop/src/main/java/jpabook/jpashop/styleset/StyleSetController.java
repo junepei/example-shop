@@ -31,7 +31,9 @@ public class StyleSetController {
      */
     @GetMapping("/collections/brands/lowest-price")
     public ResponseEntity<Response<BrandLowestPriceCollection>> getLowestPriceBrandCollection() {
-        return ResponseEntity.ok(Response.success(new BrandLowestPriceCollection()));
+        return ResponseEntity.ok(Response.success(
+                styleSetService.getLowestPriceBrandCollection()
+        ));
     }
 
     /**
