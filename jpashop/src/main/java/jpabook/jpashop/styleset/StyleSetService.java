@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class StyleSetService {
     }
 
     public BrandLowestPriceCollection getLowestPriceBrandCollection() {
-        StyleSetBrand styleSetBrand = styleSetBrandRepository.findTop1OrderByTotalPrice();
+        StyleSetBrand styleSetBrand = styleSetBrandRepository.findTop1ByOrderByTotalPrice();
         ArrayList<StyleSetPriceTag> styleSetPriceTags = new ArrayList<>();
         styleSetPriceTags.add(StyleSetPriceTag.LOWEST_PRICE);
         styleSetPriceTags.add(StyleSetPriceTag.BRAND_LOWEST_PRICE);
@@ -55,10 +56,8 @@ public class StyleSetService {
         //styleSetProducts 인자가 한개인 경우 : StyleSetType의 우선순위는 LOWEST_PRICE > BRAND_LOWEST_PRICE 이므로 상품이 적을때는 HIGHEST_PRICE 인 상품이 없을 수 있다.
         // 처리 >> 다시 DB를 조회하여 최고가 상품을 찾아서 내려보낸다. 다시 조회를 해도 한개 라면 최저가와 최고가 상품을 동일상품으로 내려보낸다.
         if (styleSetProducts.size() == 1) {
-            StyleSetProduct styleSetProduct = styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDESC(styleSetType);
-            if(styleSetProduct != null) {
-                styleSetProducts.add(styleSetProduct);
-            }
+            Optional<StyleSetProduct> optional = styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDesc(styleSetType);
+            optional.ifPresent(styleSetProducts::add);
         }
 
         //getLabel() NPE위험 경고. 위에 validateStyleSetTypeName을 통해 이미 검증

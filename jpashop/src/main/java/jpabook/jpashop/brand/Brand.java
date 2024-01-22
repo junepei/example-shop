@@ -1,4 +1,4 @@
-package jpabook.jpashop.Brand;
+package jpabook.jpashop.brand;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;

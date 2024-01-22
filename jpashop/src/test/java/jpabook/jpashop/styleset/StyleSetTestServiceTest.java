@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -70,7 +71,7 @@ public class StyleSetTestServiceTest extends StyleSetTestData {
         styleSetPriceTags.add(StyleSetPriceTag.LOWEST_PRICE);
         styleSetPriceTags.add(StyleSetPriceTag.BRAND_LOWEST_PRICE);
 
-        when(styleSetBrandRepository.findTop1OrderByTotalPrice()).thenReturn(styleSetBrand);
+        when(styleSetBrandRepository.findTop1ByOrderByTotalPrice()).thenReturn(styleSetBrand);
         when(styleSetProductRepository.findByBrandNoAndStyleSetPriceTagIn(brandD.getBrandNo(), styleSetPriceTags)).thenReturn(styleSetProducts);
 
         BrandLowestPriceCollection brandLowestPriceCollection = styleSetService.getLowestPriceBrandCollection();
@@ -116,7 +117,7 @@ public class StyleSetTestServiceTest extends StyleSetTestData {
         styleSetPriceTags.add(StyleSetPriceTag.HIGHEST_PRICE);
 
         when(styleSetProductRepository.findByStyleSetTypeAndStyleSetPriceTagIn(StyleSetType.TOP, styleSetPriceTags)).thenReturn(styleSetProducts);
-        when(styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDESC(StyleSetType.TOP)).thenReturn(additionalStyleSetProduct);
+        when(styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDesc(StyleSetType.TOP)).thenReturn(Optional.of(additionalStyleSetProduct));
 
         CategoryLowestPriceCollection categoryLowestPriceCollection = styleSetService.getLowestPriceCategoryCollection(styleSetTypeLabel);
 
@@ -139,7 +140,7 @@ public class StyleSetTestServiceTest extends StyleSetTestData {
         styleSetPriceTags.add(StyleSetPriceTag.HIGHEST_PRICE);
 
         when(styleSetProductRepository.findByStyleSetTypeAndStyleSetPriceTagIn(StyleSetType.TOP, styleSetPriceTags)).thenReturn(styleSetProducts);
-        when(styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDESC(StyleSetType.TOP)).thenReturn(null);
+        when(styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDesc(StyleSetType.TOP)).thenReturn(null);
 
         CategoryLowestPriceCollection categoryLowestPriceCollection = styleSetService.getLowestPriceCategoryCollection(styleSetTypeLabel);
 

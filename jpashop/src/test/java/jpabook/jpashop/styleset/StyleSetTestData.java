@@ -1,6 +1,6 @@
 package jpabook.jpashop.styleset;
 
-import jpabook.jpashop.Brand.Brand;
+import jpabook.jpashop.brand.Brand;
 import jpabook.jpashop.product.Category;
 import jpabook.jpashop.product.Product;
 

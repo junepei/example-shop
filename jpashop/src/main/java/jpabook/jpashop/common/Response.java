@@ -1,8 +1,10 @@
 package jpabook.jpashop.common;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Setter
 @Getter
 public class Response <T>{
@@ -23,6 +25,10 @@ public class Response <T>{
     }
     public static <T> Response<T> success(T data) {
         return new Response<>(data);
+    }
+
+    public static <T> Response<T> success() {
+        return new Response();
     }
 
     public static <T> Response<T> error(ResponseCode responseCode, String message) {

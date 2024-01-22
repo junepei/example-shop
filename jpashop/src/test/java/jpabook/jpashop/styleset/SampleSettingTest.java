@@ -1,7 +1,7 @@
 package jpabook.jpashop.styleset;
 
-import jpabook.jpashop.Brand.Brand;
-import jpabook.jpashop.Brand.BrandRepository;
+import jpabook.jpashop.brand.Brand;
+import jpabook.jpashop.brand.BrandRepository;
 import jpabook.jpashop.common.QueryDslConfig;
 import jpabook.jpashop.product.Category;
 import jpabook.jpashop.product.CategoryRepository;
