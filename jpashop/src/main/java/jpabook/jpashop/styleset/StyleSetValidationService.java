@@ -37,9 +37,9 @@ public class StyleSetValidationService {
         }
     }
 
-    public void validateStyleSetTypeName(StyleSetType styleSetType, String styleSetTypeName) {
+    public void validateStyleSetTypeLabel(StyleSetType styleSetType, String styleSetTypeLabel) {
         if(styleSetType == null) {
-            throw new BadRequestException("잘못된 카테고리명입니다. 카테고리명 : " + styleSetTypeName);
+            throw new BadRequestException("잘못된 카테고리명입니다. 카테고리명 : " + styleSetTypeLabel);
         }
     }
 }

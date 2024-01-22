@@ -41,7 +41,7 @@ public class StyleSetService {
 
     public CategoryLowestPriceCollection getLowestPriceCategoryCollection(String styleSetTypeLabel) {
         StyleSetType styleSetType = JpaShopUtils.getStyleSetTypeByLabel(styleSetTypeLabel);
-        styleSetValidationService.validateStyleSetTypeName(styleSetType, styleSetTypeLabel);
+        styleSetValidationService.validateStyleSetTypeLabel(styleSetType, styleSetTypeLabel);
 
         List<StyleSetPriceTag> styleSetPriceTags = new ArrayList<>();
         styleSetPriceTags.add(StyleSetPriceTag.LOWEST_PRICE);
@@ -56,7 +56,9 @@ public class StyleSetService {
         // 처리 >> 다시 DB를 조회하여 최고가 상품을 찾아서 내려보낸다. 다시 조회를 해도 한개 라면 최저가와 최고가 상품을 동일상품으로 내려보낸다.
         if (styleSetProducts.size() == 1) {
             StyleSetProduct styleSetProduct = styleSetProductRepository.findTop1ByStyleSetTypeOrderByPriceDESC(styleSetType);
-            styleSetProducts.add(styleSetProduct);
+            if(styleSetProduct != null) {
+                styleSetProducts.add(styleSetProduct);
+            }
         }
 
         //getLabel() NPE위험 경고. 위에 validateStyleSetTypeName을 통해 이미 검증
@@ -64,7 +66,6 @@ public class StyleSetService {
                 styleSetProducts.stream().map(StyleSetProductResponse::of).collect(Collectors.toList()));
     }
 
-    //TODO: getLowestPriceCategoryCollection testcase만들기.
     //TODO: 상품추가, 브랜드 추가 만들기
 
 

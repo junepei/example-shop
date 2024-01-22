@@ -1,4 +1,4 @@
-package jpabook.jpashop;
+package jpabook.jpashop.styleset;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,21 +20,21 @@ public class StyleSetControllerTest extends StyleSetTestData{
 
     @DisplayName("구현 1 테스트")
     @Test
-    public void testGetLowestPriceCollection() throws Exception {
+    void testGetLowestPriceCollection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/style-set/collections/lowest-price"))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("구현 2 테스트")
     @Test
-    public void testGetLowestPriceBrandCollection() throws Exception {
+    void testGetLowestPriceBrandCollection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/style-set/collections/brands/lowest-price"))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("구현 3 테스트")
     @Test
-    public void testGetLowestPriceCategoryCollection() throws Exception {
+    void testGetLowestPriceCategoryCollection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/style-set/collections/categories/lowest-price").param("name", "상의"))
                 .andExpect(status().isOk());
     }

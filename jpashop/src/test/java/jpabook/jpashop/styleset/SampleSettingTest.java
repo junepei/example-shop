@@ -1,4 +1,4 @@
-package jpabook.jpashop;
+package jpabook.jpashop.styleset;
 
 import jpabook.jpashop.Brand.Brand;
 import jpabook.jpashop.Brand.BrandRepository;
@@ -7,15 +7,12 @@ import jpabook.jpashop.product.Category;
 import jpabook.jpashop.product.CategoryRepository;
 import jpabook.jpashop.product.Product;
 import jpabook.jpashop.product.ProductRepository;
-import jpabook.jpashop.styleset.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
-
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -40,7 +37,7 @@ public class SampleSettingTest {
 
     @Rollback(false)
     @Test
-    public void setting() {
+    void setting() {
         Brand brandA = Brand.createForTest("A");
         Brand brandB = Brand.createForTest("B");
         Brand brandC = Brand.createForTest("C");

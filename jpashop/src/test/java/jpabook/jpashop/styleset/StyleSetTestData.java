@@ -1,12 +1,8 @@
-package jpabook.jpashop;
+package jpabook.jpashop.styleset;
 
 import jpabook.jpashop.Brand.Brand;
 import jpabook.jpashop.product.Category;
 import jpabook.jpashop.product.Product;
-import jpabook.jpashop.styleset.StyleSetBrand;
-import jpabook.jpashop.styleset.StyleSetPriceTag;
-import jpabook.jpashop.styleset.StyleSetProduct;
-import jpabook.jpashop.styleset.StyleSetType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -1,10 +1,7 @@
-package jpabook.jpashop;
+package jpabook.jpashop.styleset;
 
+import jpabook.jpashop.common.exception.BadRequestException;
 import jpabook.jpashop.common.exception.InternalServerErrorException;
-import jpabook.jpashop.styleset.StyleSetPriceTag;
-import jpabook.jpashop.styleset.StyleSetProduct;
-import jpabook.jpashop.styleset.StyleSetType;
-import jpabook.jpashop.styleset.StyleSetValidationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +19,7 @@ public class StyleSetValidationServiceTest extends StyleSetTestData{
     @InjectMocks
     StyleSetValidationService styleSetValidationService;
 
-    @DisplayName("testValidateLowestPriceStyleSetProducts - 성공")
+    @DisplayName("validateLowestPriceStyleSetProducts - 성공")
     @Test
     void testValidateLowestPriceStyleSetProducts() {
         List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
@@ -30,22 +27,38 @@ public class StyleSetValidationServiceTest extends StyleSetTestData{
         assertThatCode(() -> styleSetValidationService.validateLowestPriceStyleSetProducts(styleSetProducts)).doesNotThrowAnyException();
     }
 
-    @DisplayName("testValidateLowestPriceStyleSetProducts - lowest price가 잘 못 설정(부족)")
+    @DisplayName("validateLowestPriceStyleSetProducts - lowest price가 잘 못 설정(부족)")
     @Test
-    public void testGetLowestPriceCollection_dataError1() {
+    void testGetLowestPriceCollection_dataError1() {
         List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
         List<StyleSetProduct> copiedStyleSetProducts = styleSetProducts.subList(1, styleSetProducts.size() - 1);
 
         assertThatThrownBy(() -> styleSetValidationService.validateLowestPriceStyleSetProducts(copiedStyleSetProducts)).isInstanceOf(InternalServerErrorException.class);
     }
 
-    @DisplayName("testValidateLowestPriceStyleSetProducts - lowest price가 잘 못 설정(초과)")
+    @DisplayName("validateLowestPriceStyleSetProducts - lowest price가 잘 못 설정(초과)")
     @Test
-    public void testGetLowestPriceCollection_dataError2() {
+    void testGetLowestPriceCollection_dataError2() {
         List<StyleSetProduct> styleSetProducts = getLowestPriceStyleSetProduct();
         StyleSetProduct additionalProduct = createStyleSetProduct(brandA, new BigDecimal(1500), StyleSetType.TOP, StyleSetPriceTag.LOWEST_PRICE);
         styleSetProducts.add(additionalProduct);
 
         assertThatThrownBy(() -> styleSetValidationService.validateLowestPriceStyleSetProducts(styleSetProducts)).isInstanceOf(InternalServerErrorException.class);
+    }
+
+    @DisplayName("validateStyleSetTypeLabel - 정상")
+    @Test
+    void testValidateStyleSetTypeLabel() {
+        String styleSetTypeLabel = "상의";
+
+        assertThatCode(() -> styleSetValidationService.validateStyleSetTypeLabel(StyleSetType.TOP, styleSetTypeLabel)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("validateStyleSetTypeLabel - 오류")
+    @Test
+    void testValidateStyleSetTypeLabel_error() {
+        String styleSetTypeLabel = "파자마";
+
+        assertThatThrownBy(() -> styleSetValidationService.validateStyleSetTypeLabel(null, styleSetTypeLabel)).isInstanceOf(BadRequestException.class);
     }
 }
