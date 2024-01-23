@@ -1,6 +1,9 @@
-쇼핑몰 예제
+# 쇼핑몰 예제
+# 작업 방향
+상품을 세트로 묶어서 파는것을 하나의 전시관으로 생각하여 전시컨테츠화 하였습니다.
+상품과 브랜드에 영향을 끼치지 않게 StyleSetProduct, StyleSetBrand라는 별개의 도메인을 만들었습니다.
 
-# 주요 entity 설계 의도 
+# 주요 테이블 
 ## StyleSetProduct
 상품의 속성중 set판매를 위한 정보만 모아둔 테이블. 상품번호를 PK로 사용하며 테이블 관리 정책에 따라 FK로 설정. 
 |productNo | styleSetType    | styleSetPriceTag | brandNo    | brandName | price |
@@ -30,3 +33,115 @@ StyleSetProduct는 Product와 일반적으로 생애주기를 함께 합니다. 
 
 ### styleSetPriceTag의 관리
 상품의 노출조건은 판매여부와 전시여부, 판매기간, 일시중지 등 여러 조건이 붙을 수 있습니다. 예제에서의 styleSetPriceTag 설정은 상품 추가/변경/삭제 상황에서만 발생하지만 판매기간, 종료기간처럼 이벤트 발생없이 시간의 경과로 상품이 노출상태가 변경이 될 수 있습니다. 실제 서비스가 진행이 된다면 데몬을 이용하여 styleSetPriceTag의 값 설정을 지속적으로 확인하여 업데이트 하는 작업이 필요하다고 계획하고 있습니다. 
+## StyleSetBrand
+|brandNo | brandName    | totalPrice |
+| :--: | :--: | :---: |
+| 브랜드 번호   | 브랜드 이름  | 가격   |
+
+세트별 최저가 브랜드를 구하기 위해 생성하였습니다. 브랜드별 최저가를 집계하는 집계테이블 입니다.
+
+# Response / Error 처리
+### Response 처리
+성공했을때와 실패했을 때 응답값을 공통화하려고 했습니다.
+```json
+  {
+    "data": {
+        "categoryName": "상의",
+        "lowestPriceProduct": {
+            "styleSetType": "TOP",
+            "styleSetName": "상의",
+            "brandNo": 3,
+            "brandName": "C",
+            "productNo": 27,
+            "price": 10000.00
+        },
+        "highestPriceProduct": {
+            "styleSetType": "TOP",
+            "styleSetName": "상의",
+            "brandNo": 9,
+            "brandName": "I",
+            "productNo": 75,
+            "price": 11400.00
+        }
+    },
+    "success": true,
+    "code": "SUCCESS",
+    "message": null
+}
+```
+data에는 내려주려는 정보. success는 성공 여부. code에는 프론트에서 분기처리를 할 수 있는 구분값을 message에는 에러의 구체적인 메세지를 담는 의도 입니다.
+### Error 처리
+BadRequestException과 InternalServerErrorException라는 커스텀 Exception클래스를 두어 오류를 구분해서 내려줄수 있도록 설정하였습니다. </br>
+validator 기본 라이브러리를 사용하여 간단한 파라미터 체크를 하였고 MethodArgumentNotValidException에 대한 처리를 추가했습니다.</br>
+JpaShopExceptionHandler을 두어 BadRequestException, InternalServerErrorException, MethodArgumentNotValidException, Exception를 분기해서 처리하도록 했습니다.
+
+
+# 서버 구동 및 API
+서버 구동은 프로젝트를 gradle 프로젝트로 받으셔서 구동하시면 됩니다. 개발환경은 java 11와 그래들 8.3에서 작업했습니다.</br>
+H2 DB를 이용하여 구성하였고 POST맨을 통해서 호출하였습니다.  </br>
+https://app.getpostman.com/join-team?invite_code=815ab5356f1dd6edba43b5a8b5ac83f7&target_code=26cc45a24cbbf8f520428357f608ecd0 </br>
+위의 링크를 접속하면 호출 정보를 확인할 수 있습니다. 위의 링크가 되지 않을 것을 대비하여 각 api에 curl을 남겨둡니다.
+### 구현1 카테고리별 최저가
+curl --location 'localhost:8080/style-set/collections/lowest-price'
+### 구현2 브랜드별 카테고리 최저가
+curl --location 'localhost:8080/style-set/collections/brands/lowest-price'
+### 구현3 카테고리의 최저가와 최고가 상품
+curl --location 'localhost:8080/style-set/collections/categories/lowest-price?name=%EC%83%81%EC%9D%98'</br>
+name : 예제의 카테고리 명
+### 구현4 브랜드/상품 추가/수정/삭제
+브랜드, 상품이 추가 될때 event를 발생시켜 작업했습니다. styleset 도메인에서 eventlistener로 세트정보 처리를 하는 형태로 작업했습니다. </br></br>
+브랜드 추가 </br>
+curl --location 'localhost:8080/brands/' \
+--header 'Content-Type: application/json' \
+--data '{
+    "brandName" : "test13"
+}'
+</br></br>
+브랜드 수정 </br>
+curl --location --request PUT 'localhost:8080/brands/84' \
+--header 'Content-Type: application/json' \
+--data '{
+    "brandName" : "tt"
+}' </br>
+/brands/84에서 84는 brandNo입니다. 브랜드 추가API의 response값인 brandNo를 84 자리에 입력하셔서 호출하시면 됩니다. </br></br>
+브랜드 삭제</br>
+curl --location --request DELETE 'localhost:8080/brands/84'  </br>
+/brands/84에서 84는 brandNo입니다. 브랜드 추가API의 response값인 brandNo를 84 자리에 입력하셔서 호출하시면 됩니다. </br> </br>
+
+상품 추가 </br>
+curl --location 'localhost:8080/products' \
+--header 'Content-Type: application/json' \
+--data '{
+    "categoryNo" : 10,
+    "brandNo" : 1,
+    "price" : 7900,
+    "styleSetType" : "TOP"
+}'
+</br></br>
+상품 수정 </br>
+curl --location --request PUT 'localhost:8080/products/83' \
+--header 'Content-Type: application/json' \
+--data '{
+    "price" : 12000,
+    "styleSetType" : "TOP"
+}' </br>
+products/83에서 83은 productNo입니다. 상품 추가API의 response값인 productNo를 84 자리에 입력하셔서 호출하시면 됩니다. </br></br>
+상품 삭제</br>
+curl --location --request DELETE 'localhost:8080/products/83' </br>
+products/83에서 83은 productNo입니다. 상품 추가API의 response값인 productNo를 84 자리에 입력하셔서 호출하시면 됩니다. </br></br>
+
+# 테스트 시나리오
+### 1.SampleSettingTest.setting() 실행
+예제의 브랜드 A부터 I까지 브랜드와 브랜드에 속한 상품정보, 관련된 StyleSetProduct, StyleSetBrand가 DB에 저장이 됩니다.
+### 2. 구현1, 구현2, 구현3 예제 확인
+### 3. 브랜드 추가 확인
+### 4. 브랜드 수정 확인. 3의 브랜드 추가의 response에 포함된 brandNo 이용
+### 5. 브랜드 수정 확인. 3의 브랜드 추가의 response에 포함된 brandNo 이용
+### 6. 상품 추가 확인. 상의-TOP 카테고리로 최저가를 설정하여 상품 추가.
+### 7. 구현3을 실행하여 6번 API가 제대로 수행이 됐는지 확인. (최저가 상품에 6에서 추가한 상품이 노출.)
+### 8. 상품 수정 확인. 6의 상품 추가의 response에 포함된 productNo이용. 6에서 최저가로 설정된 상품을 최고가로 설정하여 수정.
+### 9. 구현3을 실행하여 8의 수행값 확인. (최저가에는 6을 실행하기 이전 최저가 상품이 노출되고 최고가에는 8에서 수정한 상품이 노출.)
+### 10. 상품 삭제 확인. 6의 상품 추가의 response에 포함된 productNo이용.
+### 11. 구현3을 실행하여 10의 결과값 확인. (최고가에 8에서 수정한 상품이 노출되지 않고 이전에 노출된 최고가 상품이 노출.)
+
+
