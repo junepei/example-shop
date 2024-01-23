@@ -38,11 +38,13 @@ public class ProductService {
         product.setPrice(price);
 
         productRepository.save(product);
-        eventPublisher.publishEvent(new ModifyProductEvent(productNo, styleSetType));
+        if (styleSetType != null) {
+            eventPublisher.publishEvent(new ModifyProductEvent(productNo, styleSetType));
+        }
     }
 
     @Transactional
-    public void addProduct(long categoryNo, long brandNo, BigDecimal price, StyleSetType styleSetType) {
+    public long addProduct(long categoryNo, long brandNo, BigDecimal price, StyleSetType styleSetType) {
         Product product = new Product();
         Brand brand = brandRepository.findById(brandNo).orElseThrow(() ->
             new BadRequestException(JpaShopErrorMessage.BRAND_NOT_EXIST_BRAND)
@@ -55,6 +57,10 @@ public class ProductService {
         product.setPrice(price);
 
         productRepository.save(product);
-        eventPublisher.publishEvent(new AddProductEvent(product.getProductNo(), styleSetType));
+        if (styleSetType != null) {
+            eventPublisher.publishEvent(new AddProductEvent(product.getProductNo(), styleSetType));
+        }
+
+        return product.getProductNo();
     }
 }

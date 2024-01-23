@@ -13,6 +13,13 @@ public interface StyleSetProductRepository extends JpaRepository<StyleSetProduct
     List<StyleSetProduct> findByBrandNoAndStyleSetPriceTagIn(Long brandNo, List<StyleSetPriceTag> styleSetPriceTag);
 
     @Transactional
+    Optional<StyleSetProduct> findByStyleSetTypeAndStyleSetPriceTag(StyleSetType styleSetType, StyleSetPriceTag styleSetPriceTag);
+
+    @Transactional
+    Optional<StyleSetProduct> findByBrandNoAndStyleSetTypeAndStyleSetPriceTag(
+            Long brandNo,StyleSetType styleSetType, StyleSetPriceTag styleSetPriceTag);
+
+    @Transactional
     Optional<StyleSetProduct> findTop1ByStyleSetTypeOrderByPriceDesc(StyleSetType styleSetType);
 
     @Transactional
@@ -28,6 +35,10 @@ public interface StyleSetProductRepository extends JpaRepository<StyleSetProduct
 
     @Transactional
     Optional<StyleSetProduct> findTop1ByStyleSetTypeAndBrandNoOrderByPrice(
+            StyleSetType styleSetType, long brandNo);
+
+    @Transactional
+    Optional<StyleSetProduct> findTop1ByStyleSetTypeAndBrandNoOrderByPriceDesc(
             StyleSetType styleSetType, long brandNo);
 
     @Transactional

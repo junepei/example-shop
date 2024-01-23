@@ -28,7 +28,10 @@ public class Response <T>{
     }
 
     public static <T> Response<T> success() {
-        return new Response();
+        Response response = new Response();
+        response.setSuccess(true);
+        response.setCode(ResponseCode.SUCCESS);
+        return response;
     }
 
     public static <T> Response<T> error(ResponseCode responseCode, String message) {

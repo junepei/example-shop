@@ -43,6 +43,8 @@ public class StyleSetController {
      */
     @GetMapping("/collections/categories/lowest-price")
     public ResponseEntity<Response<CategoryLowestPriceCollection>> getLowestPriceCategoryCollection(@RequestParam("name") String name) {
-        return ResponseEntity.ok(Response.success(new CategoryLowestPriceCollection()));
+        return ResponseEntity.ok(Response.success(
+                styleSetService.getLowestPriceCategoryCollection(name)
+        ));
     }
 }

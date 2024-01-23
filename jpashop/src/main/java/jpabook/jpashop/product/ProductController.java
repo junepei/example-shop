@@ -3,6 +3,7 @@ package jpabook.jpashop.product;
 import jpabook.jpashop.common.Response;
 import jpabook.jpashop.product.request.AddProductRequest;
 import jpabook.jpashop.product.request.ModifyProductRequest;
+import jpabook.jpashop.product.response.AddProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +27,9 @@ public class ProductController {
         productService.modifyProduct(productNo, request.getPrice(), request.getStyleSetType());
         return ResponseEntity.ok(Response.success());
     }
-    @PostMapping("/")
-    public ResponseEntity<Response> addProduct(@Valid @RequestBody AddProductRequest request) {
-        productService.addProduct( request.getCategoryNo(), request.getBrandNo(), request.getPrice(), request.getStyleSetType());
-        return ResponseEntity.ok(Response.success());
+    @PostMapping()
+    public ResponseEntity<Response<AddProductResponse>> addProduct(@Valid @RequestBody AddProductRequest request) {
+        long productNo = productService.addProduct( request.getCategoryNo(), request.getBrandNo(), request.getPrice(), request.getStyleSetType());
+        return ResponseEntity.ok(Response.success(new AddProductResponse(productNo)));
     }
 }

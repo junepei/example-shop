@@ -15,7 +15,7 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public void addBrand(String brandName) {
+    public long addBrand(String brandName) {
         Optional<Brand> optional = brandRepository.findByBrandName(brandName);
         if (optional.isPresent()) {
             throw new BadRequestException(JpaShopErrorMessage.BRAND_USED_BRAND_NAME);
@@ -25,6 +25,7 @@ public class BrandService {
         brand.setBrandName(brandName);
 
         brandRepository.save(brand);
+        return brand.getBrandNo();
     }
 
     public void modifyBrand(long brandNo, String brandName) {

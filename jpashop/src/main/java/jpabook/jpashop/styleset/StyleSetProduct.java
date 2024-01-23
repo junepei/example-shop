@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
@@ -16,8 +18,10 @@ public class StyleSetProduct {
     @Id
     private long productNo;
     @NotNull
+    @Enumerated(EnumType.STRING)
     private StyleSetType styleSetType;
     @NotNull
+    @Enumerated(EnumType.STRING)
     private StyleSetPriceTag styleSetPriceTag;
     @NotNull
     private long brandNo;

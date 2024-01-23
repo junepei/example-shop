@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class StyleSetService {
 
     private final StyleSetValidationService styleSetValidationService;
-
     private final StyleSetProductRepository styleSetProductRepository;
     private final StyleSetBrandRepository styleSetBrandRepository;
 
@@ -64,8 +63,4 @@ public class StyleSetService {
         return new CategoryLowestPriceCollection(styleSetType.getLabel(),
                 styleSetProducts.stream().map(StyleSetProductResponse::of).collect(Collectors.toList()));
     }
-
-    //TODO: 상품추가, 브랜드 추가 만들기
-
-
 }
