@@ -89,7 +89,8 @@ curl --location 'localhost:8080/style-set/collections/brands/lowest-price'
 curl --location 'localhost:8080/style-set/collections/categories/lowest-price?name=%EC%83%81%EC%9D%98'</br>
 name : 예제의 카테고리 명
 ### 구현4 브랜드/상품 추가/수정/삭제
-브랜드, 상품이 추가 될때 event를 발생시켜 작업했습니다. styleset 도메인에서 eventlistener로 세트정보 처리를 하는 형태로 작업했습니다. </br></br>
+브랜드, 상품이 추가 될때 event를 발생시켜 작업했습니다. StyleSet 도메인에서 eventlistener로 세트정보 처리를 하는 형태로 작업했습니다. eventlistener가 StyleSetAggregateService을 이용하여  StyleSet 관련한 처리를 실행합니다. </br>
+브랜드의 삭제, 상품의 추가, 수정, 삭제를 진행하면 StyleSetProduct의 값이 변경이 됩니다.</br></br>
 브랜드 추가 </br>
 curl --location 'localhost:8080/brands/' \
 --header 'Content-Type: application/json' \
